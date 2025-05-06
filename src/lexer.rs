@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 #[derive(Debug)]
 enum TokenType{
     TokIdentifier,
@@ -9,18 +7,18 @@ enum TokenType{
     TokSeperator, 
   }
 
-#[derive(Debug)]  
+
 struct Tokenizer{
     val : String,
     token : TokenType  
   }
 
 fn lexer( source : &str ) -> Vec<Tokenizer> {
-
-  let keywords : HashSet<&str> =  HashSet::from([ "int", "float", "double", "char", "if", "else", "while", "for", "return" ]);
-  let double_operators : HashSet<&str> =  HashSet::from([  "==", "!=", "<=", ">=", "++", "--", "&&", "||", "<<", ">>" ]);
-  let operators: HashSet<char> = HashSet::from (['=', '+', '-', '/', ',', '&', ';', '!']);
-  let seperators: HashSet<char> = HashSet::from ([ '{', '}', '(', ')', '[', ']' ]);
+ 
+  const KEYWORDS : [&str; 9] = [ "int", "float", "double", "char", "if", "else", "while", "for", "return" ];
+  const DOUBLE_OPERATORS :[&str; 10] = [  "==", "!=", "<=", ">=", "++", "--", "&&", "||", "<<", ">>" ];
+  const OPERATORS: [char; 8] = ['=', '+', '-', '/', ',', '&', ';', '!'] ;
+  const SEPERATORS: [char; 6] = [ '{', '}', '(', ')', '[', ']' ] ;
   let mut tokens : Vec<Tokenizer> = Vec::new();
 
  let mut c = source.chars().peekable();
@@ -33,11 +31,11 @@ fn lexer( source : &str ) -> Vec<Tokenizer> {
       }
 
     // operators
-   else if operators.contains(&curr_char){
+   else if OPERATORS.contains(&curr_char){
       let mut op_temp: String = curr_char.to_string();
       if let Some(&next) = c.peek(){
         op_temp.push(next);
-        if( double_operators.contains( op_temp.as_str() ) ){
+        if DOUBLE_OPERATORS.contains( &op_temp.as_str() ) {
           tokens.push( Tokenizer{ val: op_temp, token: TokenType::TokDoubleOperator  });
         }
         tokens.push( Tokenizer{ val: curr_char.to_string(), token: TokenType::TokOperator } ); 
@@ -46,7 +44,7 @@ fn lexer( source : &str ) -> Vec<Tokenizer> {
     }  
 
     // seperators
-   else if seperators.contains(&curr_char){
+   else if SEPERATORS.contains(&curr_char){
       tokens.push( Tokenizer{ val: curr_char.to_string(), token: TokenType::TokSeperator } );
    }
 
@@ -65,7 +63,7 @@ fn lexer( source : &str ) -> Vec<Tokenizer> {
       } 
 
       // check identifier
-      if keywords.contains( identifier.as_str() ){
+      if KEYWORDS.contains( &identifier.as_str() ){
           tokens.push( Tokenizer{ val: identifier, token: TokenType::TokIdentifier } );
       } 
     }
@@ -102,7 +100,7 @@ pub fn main(){
   let x = lexer(a);
 
   for y in x{
-    println!("{:?}", y);
+    println!("{}\t:\t{:?}", y.val, y.token);
   }
  
 }
